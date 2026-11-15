@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"${HC_TERMINAL_ID-}\" ] && python3 -c 'import json,os,subprocess,sys;d=json.load(sys.stdin);subprocess.run([\"hc\",\"label\",os.environ[\"HC_TERMINAL_ID\"],\"claude.session=\"+d[\"session_id\"],\"claude.cwd=\"+d.get(\"cwd\",\"\")],capture_output=True,timeout=4)' >/dev/null 2>&1; exit 0",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"${HC_TERMINAL_ID-}\" ] && hc label \"$HC_TERMINAL_ID\" \"status=\" \"status.color=\" >/dev/null 2>&1; exit 0",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "global": {
+    "ctrl-+": "zoom.key-in",
+    "ctrl-=": "zoom.key-in",
+    "ctrl--": "zoom.key-out",
+    "ctrl-_": "zoom.key-out",
+    "ctrl-0": "zoom.key-reset",
+    "ctrl-)": "zoom.key-reset",
+    "ctrl-shift-n": "spaces-grouped.new-space",
+    "ctrl-alt-shift-n": "notepads.toggle",
+    "cmd-e": "mod.open:recall",
+    "ctrl-shift-r": "session-keys.key-toggle",
+    "ctrl-shift-s": "mod.open:mod-settings"
+  },
+  "layout:grouped-pins": {
+    "ctrl-shift-o": "pins.key-split-right",
+    "ctrl-shift-e": "pins.key-split-down",
+    "ctrl-shift-delete": "pins.key-close",
+    "ctrl-shift-w": "pins.key-close-tab",
+    "ctrl-shift-z": "pins.key-zoom",
+    "cmd-shift-enter": "pins.key-pane-zoom",
+    "ctrl-shift-d": "pins.key-dock",
+    "ctrl-shift-p": "pins.key-toggle-active",
+    "ctrl-shift-m": "pins.key-hide"
+  }
+}
