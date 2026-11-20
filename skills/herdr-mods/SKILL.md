@@ -63,7 +63,7 @@ When finding which space or tab you're in, to avoid reporting the wrong one, loo
 
 When sending a message to another Claude session, to get replies back by name, use the `SendMessage` tool with the session's name from `ListAgents`. Keep `hc` for typing into a terminal or reading its screen; read `hc --skill` before using it.
 
-Before messaging a session, check that Claude is actually running in its terminal: a session can be asleep (the pane menu's "Sleep session" exits Claude and leaves the pane at its shell), and then a message goes nowhere, or `hc send` types it into the shell. `hc get <terminal> --json` has `"status": {"app": "claude-code", ...}` only while Claude runs; a sleeping one has `status: null` and a non-empty `sleep.session` label (set by the pane menu's Sleep and by an auto-sleep). When it's asleep, tell the user instead of sending, or wake it first if they asked you to (see "Pane menu" for the command) and wait until `status.app` is `claude-code` and its state is `idle`.
+Before messaging a session, check that Claude is actually running in its terminal: a session can be asleep (the pane menu's "Sleep session" exits Claude and leaves the pane at its shell), and then a message goes nowhere, or `hc send` types it into the shell. `hc get <terminal> --json` has `"status": {"app": "claude-code", ...}` only while Claude runs; a sleeping one has `status: null` and a non-empty `sleep.session` label (set by the pane menu's Sleep and by an auto-sleep). When it's asleep, tell the user instead of sending, or wake it first if they asked you to (see "Waking a session from any machine" below) and wait until `status.app` is `claude-code` and its state is `idle`.
 
 ```bash
 hc read <terminal> --lines 0      # its visible screen
@@ -191,6 +191,25 @@ A SessionStart hook (`claude/settings-hook.json` in the repo, installed on each 
 ```bash
 python3 ~/.config/herdr-app/mods/pane-menu/session.py sleep <terminal>   # or wake, or toggle
 ```
+
+That script is only on the computer that shows the Herdr window (where the mods are installed). On a remote machine, such as a server whose terminals the window shows, it doesn't exist.
+
+### Waking a session from any machine
+
+Use the first of these that works where you are:
+
+1. A local wake command, if this machine has one.
+2. `python3 ~/.config/herdr-app/mods/pane-menu/session.py wake <terminal>`, if the mods are installed here.
+3. By hand, which works anywhere `hc` reaches the terminal. Read the id from the terminal's `sleep.session` label (or `claude.session` if that's empty), type the resume command, then clear the sleep labels:
+
+```bash
+cmd="claude --resume <id>"
+hc keys <terminal> ctrl+c
+hc keys <terminal> $(python3 -c 'import sys;print(" ".join("space" if c==" " else c for c in sys.argv[1]))' "$cmd") enter
+hc label <terminal> "sleep.session=" "sleep.cwd=" >/dev/null
+```
+
+Type it with `hc keys`, not `hc send`: `hc send` wraps the text in an `<hc from=...>` tag, which the shell rejects. The pane's shell is already in the session's folder (`sleep.cwd`); if it isn't, type `cd <folder>` the same way first. Then wait until `hc get <terminal> --json` shows `status.app` `claude-code` and state `idle`.
 
 It logs to `~/.local/state/herdr-sessions/session.log`.
 
